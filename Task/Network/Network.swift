@@ -7,15 +7,8 @@ class Network: Networking {
         guard let urlRequest = self.urlRequest(from: apiRequest) else {
             return
         }
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = apiRequest.allHTTPHeaderFields
-        let urlSession = URLSession(configuration: configuration)
-        urlSession.configuration.httpAdditionalHeaders = apiRequest.allHTTPHeaderFields
+        let urlSession = self.urlSession(apiRequest: apiRequest)
         urlSession.dataTask(with: urlRequest) { (data, response, error) in
-            print("\(Self.self) statusCode: \(String(describing: (response as? HTTPURLResponse)?.statusCode))")
-//            print("\(Self.self) response: \(String(describing: response))")
-            print("\(Self.self) data: \(String(describing: data))")
-            print("\(Self.self) error: \(String(describing: error))")
             if let error = error {
                 completion(.failure(error))
             } else if let data = data {
@@ -32,5 +25,11 @@ class Network: Networking {
         var request = URLRequest(url: url)
         request.httpMethod = apiRequest.httpMethod
         return request
+    }
+    
+    private func urlSession(apiRequest: ApiRequest) -> URLSession {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = apiRequest.allHTTPHeaderFields
+        return URLSession(configuration: configuration)
     }
 }
