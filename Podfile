@@ -7,6 +7,8 @@ target 'Task' do
 
   # Pods for Task
     pod 'RxSwift'
+    pod 'RxCocoa'
+    pod 'Dip'
 
   target 'TaskTests' do
     inherit! :search_paths

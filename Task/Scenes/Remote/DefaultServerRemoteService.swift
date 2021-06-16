@@ -1,3 +1,5 @@
+import Foundation
+
 class DefaultServerRemoteService: ServerRemoteService {
     // MARK: - Variables
     private let networking: Networking
@@ -14,8 +16,18 @@ class DefaultServerRemoteService: ServerRemoteService {
             urlString: "http://playground.tesonet.lt/v1/servers",
             shouldAddAuthorizationHeader: true
         )
-        networking.request(apiRequest: apiRequest) { (_) in
-            fatalError("TODO: Implement servers parsing")
+        networking.request(apiRequest: apiRequest) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let servers = try JSONDecoder().decode(Array<Server>.self, from: data)
+                    completion(.success(servers))
+                } catch let error {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }
